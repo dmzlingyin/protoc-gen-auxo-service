@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package example;
+
+option go_package = "/svc";
+
+message Hello {
+  string Name = 1;
+}
+
+service HelloService {
+  rpc SayHello(Hello) returns (Hello);
+  rpc SayHi(Hello) returns (Hello);
+}

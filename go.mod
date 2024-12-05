@@ -1,4 +1,4 @@
-module auxo-service
+module github.com/dmzlingyin/protoc-gen-auxo-service
 
 go 1.22.6
 

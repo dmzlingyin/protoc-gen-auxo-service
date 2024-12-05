@@ -33,7 +33,11 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 	g.P("package ", DIR)
 	g.P()
 
-	g.QualifiedGoIdent(protogen.GoIdent{GoImportPath: "context", GoName: ""})
+	g.P("import (")
+	g.P(`"codeup.aliyun.com/wenuts/`, getProjectName(*file.Proto.Name), `/service/biz"`)
+	g.P(`"codeup.aliyun.com/wenuts/`, getProjectName(*file.Proto.Name), `/service/contract"`)
+	g.P(`"context"`)
+	g.P(")")
 
 	for _, svc := range file.Services {
 		bizField, bizName := getBizName(svc.GoName)
@@ -51,7 +55,7 @@ func generateFile(gen *protogen.Plugin, file *protogen.File) {
 		g.P()
 
 		for _, m := range svc.Methods {
-			g.P("func (s *", svc.GoName, ")", m.GoName, "(ctx context.Context, req *contract.", m.Input.GoIdent.GoName, ") (*contract.", m.Output.GoIdent.GoName, ", error) {")
+			g.P("func (s *", getEntityName(svc.GoName), ")", m.GoName, "(ctx context.Context, req *contract.", m.Input.GoIdent.GoName, ") (*contract.", m.Output.GoIdent.GoName, ", error) {")
 			g.P("return s.", bizField, ".", getBizFunName(m.GoName), "(ctx, req)")
 			g.P("}")
 			g.P()
@@ -65,6 +69,10 @@ func getFileName(protoName string) string {
 		return strings.Join(names[1:], "_")
 	}
 	return protoName
+}
+
+func getProjectName(protoName string) string {
+	return strings.ToLower(strings.Split(protoName, "_")[0])
 }
 
 func getEntityName(svcName string) string {
